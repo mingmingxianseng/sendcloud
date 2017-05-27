@@ -9,6 +9,7 @@
 namespace sendcloud;
 
 use GuzzleHttp\Client;
+use mmapi\api\ApiException;
 
 class Sendcloud
 {
@@ -37,7 +38,14 @@ class Sendcloud
                 ),
             ]
         );
-        echo $rs->getBody()
+
+        $json   = $rs->getBody()
             ->getContents();
+        $result = json_decode($json, true);
+
+        if (!$result['result']) {
+            throw new ApiException($result['message'], $result['statusCode']);
+        }
+
     }
 }
